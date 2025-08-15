@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Saving App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Global & Typography ========== */
+    :root {
+      --primary-color: #007bff;
+      --primary-color-dark: #0056b3;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #6c757d;
+      --text-color: #212529;
+      --card-bg: #ffffff;
+      --border-color: #dee2e6;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+      --border-radius: 12px;
+    }
+
+    /* ========== Dark Theme Variables ========== */
+    :root[data-theme="dark"] {
+      --light-gray: #1a1d21;
+      --medium-gray: #343a40;
+      --dark-gray: #adb5bd;
+      --text-color: #e8e6e3;
+      --card-bg: #212529;
+      --border-color: #495057;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.08);
+    }
+    
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--light-gray);
+      color: var(--text-color);
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 0 30px;
+    }
+
+    h1 {
+      margin: 30px 0;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    h2.panel-heading {
+      margin: 0 0 16px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--text-color);
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--dark-gray);
+    }
+
+    /* ========== Layout ========== */
+    .app-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      padding: 0 30px 30px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .left-panel, .middle-panel, .right-panel {
+      box-sizing: border-box;
+    }
+
+    .left-panel { flex: 1 1 320px; }
+    .middle-panel { flex: 1 1 320px; }
+    .right-panel { flex: 2 1 400px; min-width: 350px; }
+
+    /* ========== Cards ========== */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: var(--shadow);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* ========== Forms & Inputs ========== */
+    input[type=text], select {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+      background-color: #fff;
+    }
+    
+    [data-theme="dark"] input[type=text],
+    [data-theme="dark"] select {
+        background-color: var(--medium-gray);
+        color: var(--text-color);
+    }
+
+    input[type=text]:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    }
+
+    #noteText {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      box-sizing: border-box; 
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      white-space: pre-wrap;
+      font-size: 1rem;
+      outline: none;
+      overflow-y: auto;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+    }
+
+    [data-theme="dark"] #noteText {
+        background-color: var(--medium-gray);
+        color: var(--text-color);
+    }
+
+    #noteText:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    }
+
+    /* ========== Buttons ========== */
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    #toggleThemeBtn { margin-top: 0; }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: #fff;
+    }
+    .btn-primary:hover { background-color: var(--primary-color-dark); }
+
+    .btn-secondary {
+      background-color: var(--medium-gray);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover { background-color: #d3d9df; }
+    [data-theme="dark"] .btn-secondary:hover { background-color: #495057; }
+    
+    .btn-success {
+      background-color: var(--success-color);
+      color: #fff;
+    }
+    .btn-success:hover { background-color: #1e7e34; }
+
+    .delete-btn {
+      background-color: var(--danger-color);
+      color: white;
+      font-size: 0.8rem !important;
+      padding: 6px 10px !important;
+      margin: 0 !important;
+    }
+    .delete-btn:hover { background-color: #b22222; }
+
+    .restore-btn {
+      background-color: var(--success-color);
+      color: white;
+      font-size: 0.8rem !important;
+      padding: 6px 10px !important;
+      margin: 0 !important;
+    }
+    .restore-btn:hover { background-color: #1e7e34; }
+
+    /* ========== Lists & Tables ========== */
+    .bucket-list, .deleted-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .bucket-list li, .deleted-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px;
+      border-radius: 8px;
+      transition: background-color 0.2s ease;
+    }
+    .bucket-list li:hover { background-color: #f1f3f5; }
+    [data-theme="dark"] .bucket-list li:hover { background-color: var(--medium-gray); }
+
+    .bucket-title {
+      cursor: pointer;
+      color: var(--primary-color);
+      font-weight: 500;
+      font-size: 1rem;
+    }
+    .bucket-title:hover { text-decoration: underline; }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin-top: 12px;
+    }
+
+    .results-table th,
+    .results-table td {
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      text-align: left;
+    }
+
+    .results-table th {
+      background: var(--medium-gray);
+      font-weight: 600;
+    }
+    .results-table tbody tr:nth-child(even) { background-color: #fcfcfc; }
+    [data-theme="dark"] .results-table tbody tr:nth-child(even) { background-color: #2c3136; }
+
+    /* ========== Note View ========== */
+    .note-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .note-item p { margin: 4px 0; }
+    .note-item div { margin-top: 10px; }
+
+    /* ========== Misc & Responsive ========== */
+    .hidden { display: none !important; }
+
+    #bucketStatsSection, #pieChartSection {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+    #bucketChart, #pieChart {
+        display: block;
+        box-sizing: border-box;
+        height: 350px !important;
+        width: 100% !important;
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      .left-panel, .middle-panel {
+        flex-basis: 45%;
+      }
+      .right-panel {
+        flex-basis: 100%;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body { font-size: 14px; }
+      .header-container { padding: 0 15px; }
+      h1 { font-size: 1.6rem; }
+      .app-container {
+        flex-direction: column;
+        padding: 15px;
+        gap: 15px;
+      }
+      .card { padding: 20px; margin-bottom: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-container">
+    <h1>Test Saving App</h1>
+    <button id="toggleThemeBtn" class="btn-secondary">Dark Mode 🌙</button>
+  </div>
+
+  <div class="app-container">
+
+    <div class="left-panel">
+      <div class="card">
+        <h2 class="panel-heading">Add New Note</h2>
+        <label for="testNumber">Test Number</label>
+        <input id="testNumber" type="text" placeholder="e.g. Test #123">
+        <label for="bucketSelect">Bucket</label>
+        <select id="bucketSelect"></select>
+        <label for="noteText">Note (Paste from Slack)</label>
+        <div id="noteText" contenteditable="true"></div>
+        <button id="saveNoteBtn" class="btn-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4.5a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 .5-.5z"/></svg>
+          Save Note
+        </button>
+      </div>
+
+      <div class="card">
+        <h2 class="panel-heading">Create New Bucket</h2>
+        <label for="bucketName">Bucket Name</label>
+        <input id="bucketName" type="text" placeholder="e.g. My Bucket">
+        <label for="bucketKeyword">Keyword</label>
+        <input id="bucketKeyword" type="text" placeholder="e.g. rocket">
+        <button id="addBucketBtn" class="btn-primary">Add Bucket</button>
+      </div>
+    </div>
+
+    <div class="middle-panel">
+      <div class="card">
+        <h2 class="panel-heading">All Buckets</h2>
+        <ul id="bucketList" class="bucket-list"></ul>
+      </div>
+
+      <div class="card">
+        <h2 class="panel-heading">Recently Deleted Buckets</h2>
+        <ul id="deletedBucketList" class="deleted-list"></ul>
+      </div>
+
+      <div class="card">
+        <h2 class="panel-heading">Actions</h2>
+        <input id="searchTestNumberInput" type="text" placeholder="Enter Test # to search...">
+        <button id="searchTestBtn" class="btn-secondary" style="width: 100%; margin-top: 10px;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+          Search
+        </button>
+        <button id="viewAllTestNumbersBtn" class="btn-secondary" style="width: 100%;">View All Test Numbers</button>
+        <button id="downloadTestNumbersCsvBtn" class="btn-success" style="width: 100%;">Download All as CSV</button>
+        <button id="viewBucketStatsBtn" class="btn-secondary" style="width: 100%;">View Bucket Stats</button>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div id="bucketViewSection" class="card hidden">
+        <h2 class="panel-heading">Bucket: <span id="bucketViewName"></span></h2>
+        <button id="backToMainBtn" class="btn-secondary">Back to Main View</button>
+        <div id="bucketNotesContainer" style="margin-top: 20px;"></div>
+      </div>
+
+      <div id="searchResultsSection" class="card hidden">
+        <h2 class="panel-heading">Search Results</h2>
+        <p id="searchResultsInfo"></p>
+        <table id="searchResultsTable" class="results-table">
+          <thead>
+            <tr><th>Timestamp</th><th>Test Number</th><th>Bucket</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="allTestNumbersSection" class="card hidden">
+        <h2 class="panel-heading">All Test Numbers</h2>
+        <p id="allTestNumbersInfo"></p>
+        <table id="allTestNumbersTable" class="results-table">
+          <thead>
+            <tr><th>Test Number</th><th>Count</th><th>Buckets</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="bucketStatsSection" class="card hidden">
+        <h2 class="panel-heading">Bucket Statistics</h2>
+        <div class="chart-container">
+          <canvas id="bucketChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
